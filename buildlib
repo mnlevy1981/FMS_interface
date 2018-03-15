@@ -49,7 +49,7 @@ def buildlib(bldroot, installpath, caseroot):
             os.makedirs(os.path.join(bldroot,"FMS"))            
 
         filepath = []
-        for _dir in glob.iglob(os.path.join(fms_dir,"*")):
+        for _dir in glob.iglob(os.path.join(fms_dir,"src","*")):
             if os.path.isdir(_dir) and not "cime_config" in _dir:
                 filepath.append(os.path.join(fms_dir, _dir))
         with open(os.path.join(installpath,"Filepath"), "w") as fd:
@@ -59,8 +59,8 @@ def buildlib(bldroot, installpath, caseroot):
         gmake_opts = "-f {} ".format(os.path.join(fms_dir,"Makefile.cesm"))
         gmake_opts += " -C {} ".format(installpath)
         gmake_opts += "CASEROOT={} ".format(caseroot)
-        gmake_opts += "USER_INCLDIR=\"-I{} -I{} -I{}\"".format(os.path.join(fms_dir,"include"),
-                                                               os.path.join(fms_dir,"mpp","include"), os.path.join(bldroot,"FMS"))
+        gmake_opts += "USER_INCLDIR=\"-I{} -I{} -I{}\"".format(os.path.join(fms_dir,"src","include"),
+                                                               os.path.join(fms_dir,"src","mpp","include"), os.path.join(bldroot,"FMS"))
                                                                
         gmake_opts += " COMPLIB=libfms.a "
         
