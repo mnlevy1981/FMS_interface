@@ -64,7 +64,8 @@ def buildlib(bldroot, installpath, caseroot):
         with open(os.path.join(installpath,"Filepath"), "w") as fd:
             for path in filepath:
                 fd.write(path+"\n")
-
+        # Tell mkSrcfiles to ignore files beginning in test_
+        os.environ["mkSrcfiles_skip_prefix"] = "test_"
         gmake_opts = "-f {} ".format(os.path.join(fms_dir,"Makefile.cesm"))
         gmake_opts += " -C {} ".format(installpath)
         gmake_opts += "CASEROOT={} ".format(caseroot)
