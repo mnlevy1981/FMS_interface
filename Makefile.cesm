@@ -63,7 +63,7 @@ endif
 # set CPP options (must use this before any flags or cflags settings)
 #===============================================================================
 
-CPPDEFS := $(USER_CPPDEFS) -D$(OS) -Duse_libMPI -Duse_netCDF -DSPMD -D__IFC
+CPPDEFS := $(USER_CPPDEFS) -D$(OS) -Duse_libMPI -Duse_netCDF -Duse_LARGEFILE -DSPMD -D__IFC
 
 # Unless DEBUG mode is enabled, use NDEBUG to turn off assert statements.
 ifneq ($(strip $(DEBUG)),TRUE)
