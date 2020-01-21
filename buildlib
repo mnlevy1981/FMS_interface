@@ -55,10 +55,25 @@ def buildlib(bldroot, installpath, caseroot):
     with Case(caseroot, read_only=False) as case:
         srcroot = case.get_value("SRCROOT")
         fms_dir = os.path.join(srcroot,"libraries","FMS")
+
+        compiler    = case.get_value("COMPILER")
+        ninst_value = case.get_value("NINST_VALUE")
+        esmfdir     = "esmf" if case.get_value("USE_ESMF_LIB") else "noesmf"
+        debug       = case.get_value("DEBUG")
+        debugdir    = "debug" if debug else "nodebug"
+        build_threaded      = case.get_build_threaded()
+        threaddir   = "threads" if build_threaded else "nothreads"
+        mpilib      = case.get_value("MPILIB")
+        comp_interface      = case.get_value("COMP_INTERFACE")
+        sharedpath  = os.path.join(compiler, mpilib, debugdir, threaddir, comp_interface, comp_interface, esmfdir, ninst_value, "include")
+
+
         if not os.path.isdir(os.path.join(bldroot,"FMS")):
             os.makedirs(os.path.join(bldroot,"FMS"))
 
         filepath = []
+        # put src_override directory at head of Filepath to use CESM interface versions of the FMS files.
+        filepath.append(os.path.join(fms_dir,"src_override"))
         for _dir in glob.iglob(os.path.join(fms_dir,"src","*")):
             if os.path.isdir(_dir) and not "cime_config" in _dir:
                 filepath.append(os.path.join(fms_dir, _dir))
@@ -70,8 +85,10 @@ def buildlib(bldroot, installpath, caseroot):
         gmake_opts = "-f {} ".format(os.path.join(fms_dir,"Makefile.cesm"))
         gmake_opts += " -C {} ".format(installpath)
         gmake_opts += "CASEROOT={} ".format(caseroot)
-        gmake_opts += "USER_INCLDIR=\"-I{} -I{} -I{}\"".format(os.path.join(fms_dir,"src","include"),
-                                                               os.path.join(fms_dir,"src","mpp","include"), os.path.join(bldroot,"FMS"))
+        gmake_opts += "USER_INCLDIR=\"-I{} -I{} -I{} -I{}\"".format(os.path.join(fms_dir,"src","include"),
+                                                               os.path.join(fms_dir,"src","mpp","include"),
+                                                               os.path.join(bldroot,sharedpath), os.path.join(bldroot,"FMS"))
+#        /intel/mvapich2/debug/nothreads/mct/mct/noesmf/c1a1l1i1o1r1g1w1i1e1/include/
 
         gmake_opts += " COMPLIB=libfms.a "
         gmake_opts += get_standard_makefile_args(case)
