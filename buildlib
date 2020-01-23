@@ -88,8 +88,6 @@ def buildlib(bldroot, installpath, caseroot):
         gmake_opts += "USER_INCLDIR=\"-I{} -I{} -I{} -I{}\"".format(os.path.join(fms_dir,"src","include"),
                                                                os.path.join(fms_dir,"src","mpp","include"),
                                                                os.path.join(bldroot,sharedpath), os.path.join(bldroot,"FMS"))
-#        /intel/mvapich2/debug/nothreads/mct/mct/noesmf/c1a1l1i1o1r1g1w1i1e1/include/
-
         gmake_opts += " COMPLIB=libfms.a "
         gmake_opts += get_standard_makefile_args(case)
         gmake_cmd = case.get_value("GMAKE")
