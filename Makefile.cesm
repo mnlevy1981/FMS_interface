@@ -229,9 +229,6 @@ endif
 # This is needed so that dependancies are found
 VPATH+=$(CSM_SHR_INCLUDE)
 
-# Below includedir does not exist. Commenting out. -aa
-#INCLDIR +=	-I$(INSTALL_SHAREDPATH)/include
-
 FFLAGS += $(FPPDEFS)
 FFLAGS_NOOPT += $(FPPDEFS)
 
