@@ -1,6 +1,18 @@
 ===============================================================================
 Tag Creator: altuntas
 Developers:  altuntas
+Tag Date:    21 Feb 2020
+Tag Name:    fi_20200221
+
+FMS_interface Updates Summary:
+- Fixes intel debug mode by adding -check nopointer flag
+- Fixes gnu build: adds -fcray-pointer -fdefault-double-8 -w
+
+Testing: aux_mom, cheyenne, b4b
+
+===============================================================================
+Tag Creator: altuntas
+Developers:  altuntas
 Tag Date:    20 Aug 2019
 Tag Name:    fi_20190820
 
@@ -8,6 +20,3 @@ FMS_interface Updates Summary:
 - Added ChangeLog file.
 
 Testing: n/a
-
-Files Modified/Added/Removed:
-A  ChangeLog
