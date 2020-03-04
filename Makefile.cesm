@@ -83,6 +83,12 @@ endif
 
 include $(CASEROOT)/Macros.make
 
+# gfortran compiler directives - FMS uses cray pointers
+
+ifeq ($(COMPILER),gnu)
+  FFLAGS      +=  -fcray-pointer
+endif
+
 # autopromotion needed for FMS 
 FFLAGS += $(FC_AUTO_R8)
 
