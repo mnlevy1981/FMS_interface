@@ -162,8 +162,6 @@ else
   endif
   endif
 endif
-FFLAGS += -I$(INC_NETCDF)
-CFLAGS += -I$(INC_NETCDF)
 
 # Set HAVE_SLASHPROC on LINUX systems which are not bluegene or Darwin (OSx)
 
@@ -222,6 +220,14 @@ VPATH+=$(CSM_SHR_INCLUDE)
 
 INCLDIR +=	-I$(INSTALL_SHAREDPATH)/include
 
+ifeq ($(NETCDF_SEPARATE), FALSE)
+  INCLDIR += -I$(INC_NETCDF)
+else ifeq ($(NETCDF_SEPARATE), TRUE)
+  INCLDIR += -I$(INC_NETCDF_C) -I$(INC_NETCDF_FORTRAN)
+endif
+ifdef MOD_NETCDF
+  INCLDIR += -I$(MOD_NETCDF)
+endif
 
 FFLAGS += $(FPPDEFS)
 FFLAGS_NOOPT += $(FPPDEFS)
