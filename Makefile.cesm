@@ -235,7 +235,6 @@ endif
 # This is needed so that dependancies are found
 CSM_SHR_INCLUDE:=$(INSTALL_SHAREDPATH)/$(COMP_INTERFACE)/$(ESMFDIR)/$(NINST_VALUE)/include
 INCLDIR += -I$(CSM_SHR_INCLUDE)
-###VPATH += $(CSM_SHR_INCLUDE)
 
 FFLAGS += $(FPPDEFS)
 FFLAGS_NOOPT += $(FPPDEFS)
