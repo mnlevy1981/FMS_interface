@@ -172,6 +172,8 @@ else
   endif
   endif
 endif
+FFLAGS += -I$(INC_NETCDF)
+CFLAGS += -I$(INC_NETCDF)
 
 # Set HAVE_SLASHPROC on LINUX systems which are not bluegene or Darwin (OSx)
 
