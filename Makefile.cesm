@@ -40,10 +40,10 @@ CASETOOLS ?= $(CASEROOT)/Tools
 # Determine whether to compile threaded or not
 ifeq ($(strip $(BUILD_THREADED)),TRUE)
       THREADDIR = threads
-      compile_threaded = TRUE
+      compile_threaded = true
 else
       THREADDIR = nothreads
-      compile_threaded = FALSE
+      compile_threaded = false
 endif
 
 # set the debug directory based on the debug status
@@ -53,7 +53,7 @@ else
    DEBUGDIR = nodebug
 endif
 
-USE_CXX = FALSE
+USE_CXX = false
 
 ifndef MOD_SUFFIX
    MOD_SUFFIX := mod
@@ -83,12 +83,6 @@ endif
 
 include $(CASEROOT)/Macros.make
 
-# gfortran compiler directives - FMS uses cray pointers
-
-ifeq ($(COMPILER),gnu)
-  FFLAGS      +=  -fcray-pointer
-endif
-
 # autopromotion needed for FMS 
 FFLAGS += $(FC_AUTO_R8)
 
@@ -117,7 +111,7 @@ ifeq ($(origin LD), default)
   endif
 endif
 
-ifeq ($(USE_CXX), TRUE)
+ifeq ($(USE_CXX), true)
   ifeq ($(SUPPORTS_CXX), FALSE)
     $(error Fatal attempt to include C++ code on a compiler/machine combo that has not been set up to support C++)
   endif
@@ -145,7 +139,7 @@ ifdef NETCDF_C_PATH
   ifndef NETCDF_FORTRAN_PATH
     $(error "NETCDF_C_PATH specified without NETCDF_FORTRAN_PATH")
   endif
-  NETCDF_SEPARATE:=TRUE
+  NETCDF_SEPARATE:=true
   ifndef INC_NETCDF_C
     INC_NETCDF_C:=$(NETCDF_C_PATH)/include
   endif
@@ -161,7 +155,7 @@ ifdef NETCDF_C_PATH
  else ifdef NETCDF_FORTRAN_PATH
   $(error "NETCDF_FORTRAN_PATH specified without NETCDF_C_PATH")
  else ifdef NETCDF_PATH
-  NETCDF_SEPARATE:=FALSE
+  NETCDF_SEPARATE:=false
   ifndef INC_NETCDF
     INC_NETCDF:=$(NETCDF_PATH)/include
   endif
@@ -238,9 +232,9 @@ FFLAGS_NOOPT += $(FPPDEFS)
 
 # System libraries (netcdf, mpi, pnetcdf, esmf, trilinos, etc.)
 ifndef SLIBS
-  ifeq ($(NETCDF_SEPARATE), FALSE)
+  ifeq ($(NETCDF_SEPARATE), false)
     SLIBS := -L$(LIB_NETCDF) -lnetcdff -lnetcdf
-  else ifeq ($(NETCDF_SEPARATE), TRUE)
+  else ifeq ($(NETCDF_SEPARATE), true)
     SLIBS := -L$(LIB_NETCDF_FORTRAN) -L$(LIB_NETCDF_C) -lnetcdff -lnetcdf
   endif
 endif
@@ -304,7 +298,7 @@ db_flags:
 	@echo "* cc      := $(CC)  $(CFLAGS) $(INCS) $(INCLDIR)"
 	@echo "* .F.o    := $(FC)  $(FFLAGS) $(FIXEDFLAGS) $(INCS) $(INCLDIR)"
 	@echo "* .F90.o  := $(FC)  $(FFLAGS) $(FREEFLAGS) $(INCS) $(INCLDIR)"
-	ifeq ($(USE_CXX), TRUE)
+	ifeq ($(USE_CXX), true)
 	  @echo "* .cpp.o  := $(CXX) $(CXXFLAGS) $(INCS) $(INCLDIR)"
 	endif
 
@@ -314,10 +308,10 @@ db_flags:
 
 test_fc: test_fc.o
 	$(LD) -o $@ test_fc.o $(LDFLAGS)
-ifeq ($(NETCDF_SEPARATE), FALSE)
+ifeq ($(NETCDF_SEPARATE), false)
 test_nc: test_nc.o
 	$(LD) -o $@ test_nc.o -L$(LIB_NETCDF) -lnetcdff -lnetcdf $(LDFLAGS)
-else ifeq ($(NETCDF_SEPARATE), TRUE)
+else ifeq ($(NETCDF_SEPARATE), true)
 test_nc: test_nc.o
 	$(LD) -o $@ test_nc.o -L$(LIB_NETCDF_FORTRAN) -L$(LIB_NETCDF_C) -lnetcdff -lnetcdf $(LDFLAGS)
 endif
