@@ -11,6 +11,7 @@ sys.path.append(_LIBDIR)
 from standard_script_setup import *
 from CIME.utils import copyifnewer, run_bld_cmd_ensure_logging
 from CIME.case import Case
+from CIME.build import get_standard_makefile_args
 import glob
 
 logger = logging.getLogger(__name__)
@@ -55,7 +56,7 @@ def buildlib(bldroot, installpath, caseroot):
         srcroot = case.get_value("SRCROOT")
         fms_dir = os.path.join(srcroot,"libraries","FMS")
         if not os.path.isdir(os.path.join(bldroot,"FMS")):
-            os.makedirs(os.path.join(bldroot,"FMS"))            
+            os.makedirs(os.path.join(bldroot,"FMS"))
 
         filepath = []
         for _dir in glob.iglob(os.path.join(fms_dir,"src","*")):
@@ -71,9 +72,9 @@ def buildlib(bldroot, installpath, caseroot):
         gmake_opts += "CASEROOT={} ".format(caseroot)
         gmake_opts += "USER_INCLDIR=\"-I{} -I{} -I{}\"".format(os.path.join(fms_dir,"src","include"),
                                                                os.path.join(fms_dir,"src","mpp","include"), os.path.join(bldroot,"FMS"))
-                                                               
+
         gmake_opts += " COMPLIB=libfms.a "
-        
+        gmake_opts += get_standard_makefile_args(case)
         gmake_cmd = case.get_value("GMAKE")
 
         # This runs the FMS build
