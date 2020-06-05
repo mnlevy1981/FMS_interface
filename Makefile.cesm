@@ -92,6 +92,22 @@ endif
 # autopromotion needed for FMS 
 FFLAGS += $(FC_AUTO_R8)
 
+# Additional GNU flags needed for FMS
+ifeq ($(strip $(COMPILER)),gnu)
+  FFLAGS += -fcray-pointer -fdefault-double-8
+  # also, below we inhibit all GNU compiler warnings for FMS because (1) we have no control
+  # over FMS, and (2) some GNU warning msgs contain characters that require encoding/decoding.
+  FFLAGS += -w
+  CFLAGS += -w
+endif
+
+# Disable the check for unallocated allocatable objects for FMS
+ifeq ($(strip $(DEBUG)),TRUE)
+  ifeq ($(strip $(COMPILER)),intel)
+    FFLAGS += -check nopointer
+  endif
+endif
+
 # Use this if LD has not already been defined.
 ifeq ($(origin LD), default)
   ifeq ($(strip $(MPILIB)),mpi-serial)
@@ -216,18 +232,6 @@ endif
 
 # This is needed so that dependancies are found
 VPATH+=$(CSM_SHR_INCLUDE)
-
-
-INCLDIR +=	-I$(INSTALL_SHAREDPATH)/include
-
-ifeq ($(NETCDF_SEPARATE), FALSE)
-  INCLDIR += -I$(INC_NETCDF)
-else ifeq ($(NETCDF_SEPARATE), TRUE)
-  INCLDIR += -I$(INC_NETCDF_C) -I$(INC_NETCDF_FORTRAN)
-endif
-ifdef MOD_NETCDF
-  INCLDIR += -I$(MOD_NETCDF)
-endif
 
 FFLAGS += $(FPPDEFS)
 FFLAGS_NOOPT += $(FPPDEFS)
