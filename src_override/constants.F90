@@ -138,6 +138,7 @@ real, public, parameter :: KELVIN      = 273.15_r8_kind     !< Degrees Kelvin at
 
 use shr_kind_mod,   only : R8 => shr_kind_r8
 use shr_const_mod,  only : &
+     SHR_CONST_PSTD,                      & ! standard pressure ~ pascals
      PI              => SHR_CONST_PI,     &
      PI_8            => SHR_CONST_PI,     &
      SECONDS_PER_DAY => SHR_CONST_CDAY,   &
@@ -151,7 +152,6 @@ use shr_const_mod,  only : &
      RDGAS           => SHR_CONST_RDAIR,  & ! Dry air gas constant     ~ J/K/kg
      RVGAS           => SHR_CONST_RWV,    & ! Water vapor gas constant ~ J/K/kg
      VONKARM         => SHR_CONST_KARMAN, & ! Von Karman constant
-     PSTD_MKS        => SHR_CONST_PSTD,   & ! standard pressure ~ pascals
      TFREEZE         => SHR_CONST_TKFRZ,  & ! freezing T of fresh water          ~ K
      RHOAIR          => SHR_CONST_RHODAIR,& ! density of dry air at STP  ~ kg/m^3
      DENS_H2O        => SHR_CONST_RHOFW,  & ! density of fresh water     ~ kg/m^3
@@ -164,6 +164,10 @@ use shr_const_mod,  only : &
 
 implicit none
 private
+
+public :: PI, PI_8, SECONDS_PER_DAY, OMEGA, RADIUS, GRAV, STEFAN, AVOGNO, &
+          WTMAIR, WTMH2O, RDGAS, RVGAS, VONKARM, TFREEZE, RHOAIR, DENS_H2O, &
+          RHO0, CP_AIR, CP_VAPOR, CP_OCEAN, HLF, HLV
 
 ! Include variable "version" to be written to log file.
 #include<file_version.h>
@@ -195,6 +199,7 @@ real(R8),   public, parameter :: WTMCFC11 = 137.3681_r8            !< Molecular 
 real(R8),   public, parameter :: WTMCFC12 = 120.9135_r8            !< Molecular weight of CFC-21 (CCl2F2) [AMU]
 real(R8),   public, parameter :: WTMN     =  14.0067_r8            !< Molecular weight of Nitrogen [AMU]
 real(R8),   public, parameter :: DIFFAC   = 1.660000E+00_r8        !< Diffusivity factor [dimensionless]
+real(R8),   public, parameter :: PSTD_MKS = SHR_CONST_PSTD         !< standard pressure ~ pascals
 real(R8),   public, parameter :: PSTD     = SHR_CONST_PSTD*10.0_r8 !< convert cesm units N/m^2 to dynes/cm^2
 real(R8),   public, parameter :: SECONDS_PER_HOUR   = 3600._r8     !< Seconds in an hour [s]
 real(R8),   public, parameter :: SECONDS_PER_MINUTE = 60._r8       !< Seconds in a minute [s]
