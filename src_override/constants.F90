@@ -138,6 +138,7 @@ real, public, parameter :: KELVIN      = 273.15_r8_kind     !< Degrees Kelvin at
 
 use shr_kind_mod,   only : R8 => shr_kind_r8
 use shr_const_mod,  only : &
+     SHR_CONST_PSTD,                      & ! standard pressure ~ pascals
      PI              => SHR_CONST_PI,     &
      PI_8            => SHR_CONST_PI,     &
      SECONDS_PER_DAY => SHR_CONST_CDAY,   &
@@ -151,7 +152,6 @@ use shr_const_mod,  only : &
      RDGAS           => SHR_CONST_RDAIR,  & ! Dry air gas constant     ~ J/K/kg
      RVGAS           => SHR_CONST_RWV,    & ! Water vapor gas constant ~ J/K/kg
      VONKARM         => SHR_CONST_KARMAN, & ! Von Karman constant
-     PSTD_MKS        => SHR_CONST_PSTD,   & ! standard pressure ~ pascals
      TFREEZE         => SHR_CONST_TKFRZ,  & ! freezing T of fresh water          ~ K
      RHOAIR          => SHR_CONST_RHODAIR,& ! density of dry air at STP  ~ kg/m^3
      DENS_H2O        => SHR_CONST_RHOFW,  & ! density of fresh water     ~ kg/m^3
@@ -164,6 +164,10 @@ use shr_const_mod,  only : &
 
 implicit none
 private
+
+public :: PI, PI_8, SECONDS_PER_DAY, OMEGA, RADIUS, GRAV, STEFAN, AVOGNO, &
+          WTMAIR, WTMH2O, RDGAS, RVGAS, VONKARM, TFREEZE, RHOAIR, DENS_H2O, &
+          RHO0, CP_AIR, CP_VAPOR, CP_OCEAN, HLF, HLV
 
 ! Include variable "version" to be written to log file.
 #include<file_version.h>
@@ -183,8 +187,11 @@ real :: realnumber !< dummy variable to use in HUGE initializations
 
 real(R8),   public, parameter :: KAPPA  = RDGAS/CP_AIR             !< RDGAS / CP_AIR [dimensionless]
 real(R8),   public, parameter :: RHO0R   = 1.0_r8/RHO0        	   !< Reciprocal of average density of sea water [m^3/kg]
-real(R8),   public, parameter :: RHO_CP  = RHO0*CP_OCEAN           !< (kg/m^3)*(cal/kg/deg C)(joules/cal) = (joules/m^3/deg C) [J/m^3/deg]
-real(R8),   public, parameter :: ES0 = 1.0_r8                      !< Humidity factor. Controls the humidity content of the atmosphere through
+real(R8),   public, parameter :: RHO_CP  = RHO0*CP_OCEAN           !< (kg/m^3)*(cal/kg/deg C)(joules/cal) =
+                                                                   !<(joules/m^3/deg C) [J/m^3/deg]
+real(R8),   public, parameter :: ES0 = 1.0_r8                      !< Humidity factor. Controls the humidity content of the
+                                                                   !< atmosphere through the Saturation Vapour Pressure
+                                                                   !< expression when using DO_SIMPLE. [dimensionless]
 real(R8),   public, parameter :: HLS = HLV + HLF                   !< Latent heat of sublimation [J/kg]
 real(R8),   public, parameter :: WTMOZONE =  47.99820_r8           !< Molecular weight of ozone [AMU]
 real(R8),   public, parameter :: WTMC     =  12.00000_r8           !< Molecular weight of carbon [AMU]
@@ -195,6 +202,7 @@ real(R8),   public, parameter :: WTMCFC11 = 137.3681_r8            !< Molecular 
 real(R8),   public, parameter :: WTMCFC12 = 120.9135_r8            !< Molecular weight of CFC-21 (CCl2F2) [AMU]
 real(R8),   public, parameter :: WTMN     =  14.0067_r8            !< Molecular weight of Nitrogen [AMU]
 real(R8),   public, parameter :: DIFFAC   = 1.660000E+00_r8        !< Diffusivity factor [dimensionless]
+real(R8),   public, parameter :: PSTD_MKS = SHR_CONST_PSTD         !< standard pressure ~ pascals
 real(R8),   public, parameter :: PSTD     = SHR_CONST_PSTD*10.0_r8 !< convert cesm units N/m^2 to dynes/cm^2
 real(R8),   public, parameter :: SECONDS_PER_HOUR   = 3600._r8     !< Seconds in an hour [s]
 real(R8),   public, parameter :: SECONDS_PER_MINUTE = 60._r8       !< Seconds in a minute [s]
@@ -203,11 +211,12 @@ real(R8),   public, parameter :: DEG_TO_RAD         = PI/180._r8   !< Radians pe
 real(R8),   public, parameter :: RADIAN             = RAD_TO_DEG   !< Equal to RAD_TO_DEG for backward compatability. [rad/deg]
 real(R8),   public, parameter :: ALOGMIN            = -50.0_r8     !< Minimum value allowed as argument to log function [N/A]
 real(R8),   public, parameter :: EPSLN              = 1.0e-40_r8   !< A small number to prevent divide by zero exceptions [N/A]
-real(R8),   public, parameter :: RADCON = ((1.0E+02_r8*GRAV)/(1.0E+04_r8*CP_AIR))*SECONDS_PER_DAY !< Factor used to convert flux divergence 
+real(R8),   public, parameter :: RADCON = ((1.0E+02_r8*GRAV)/(1.0E+04_r8*CP_AIR))*SECONDS_PER_DAY !< convert flux divergence
                                                                    !to heating rate in degrees per day [deg sec/(cm day)]
-real(R8),   public, parameter :: RADCON_MKS  = (GRAV/CP_AIR)*SECONDS_PER_DAY !< Factor used to convert flux divergence to heating rate in degrees per day [deg sec/(m day)]
+real(R8),   public, parameter :: RADCON_MKS  = (GRAV/CP_AIR)*SECONDS_PER_DAY !< Factor used to convert flux divergence to
+                                                                   !< heating rate in degrees per day [deg sec/(m day)]
 real(R8),   public, parameter :: O2MIXRAT    = 2.0953E-01_r8       !< Mixing ratio of molecular oxygen in air [dimensionless]
-real(R8),   public, parameter :: C2DBARS     = 1.e-4_r8            !< Converts rho*g*z (in mks) to dbars: 1dbar = 10^4 (kg/m^3)(m/s^2)m [dbars]
+real(R8),   public, parameter :: C2DBARS     = 1.e-4_r8            !< rho*g*z(mks) to dbars: 1dbar = 10^4 (kg/m^3)(m/s^2)m [dbars]
 real(R8),   public, parameter :: KELVIN      = 273.15_r8           !< Degrees Kelvin at zero Celsius [K]
 
 #endif    ! ifdef USE_FMSCONST
