@@ -59,6 +59,8 @@ def buildlib(bldroot, installpath, caseroot):
             os.makedirs(os.path.join(bldroot,"FMS"))
 
         filepath = []
+        # put src_override directory at head of Filepath to use CESM interface versions of the FMS files.
+        filepath.append(os.path.join(fms_dir,"src_override"))
         for _dir in glob.iglob(os.path.join(fms_dir,"src","*")):
             if os.path.isdir(_dir) and not "cime_config" in _dir:
                 filepath.append(os.path.join(fms_dir, _dir))
