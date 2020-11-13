@@ -1,6 +1,18 @@
 ===============================================================================
 Tag Creator: altuntas
 Developers:  altuntas
+Tag Date:    12 Nov 2020
+Tag Name:    fi_20201112
+
+FMS_interface Updates Summary:
+- update fms source tag to 2019.01.03
+
+Testing: aux_mom, cheyenne, b4b (altuntas)
+also, b4b with the FV3 1 degree test (jtruesdal)
+
+===============================================================================
+Tag Creator: altuntas
+Developers:  altuntas
 Tag Date:    21 Feb 2020
 Tag Name:    fi_20200221
 
