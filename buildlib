@@ -73,7 +73,9 @@ def buildlib(bldroot, installpath, caseroot):
         gmake_opts += " -C {} ".format(installpath)
         gmake_opts += "CASEROOT={} ".format(caseroot)
         gmake_opts += "USER_INCLDIR=\"-I{} -I{} -I{}\"".format(os.path.join(fms_dir,"src","include"),
-                                                               os.path.join(fms_dir,"src","mpp","include"), os.path.join(bldroot,"FMS"))
+                                                               os.path.join(fms_dir,"src","fms2_io","include"),
+                                                               os.path.join(fms_dir,"src","mpp","include"),
+                                                               os.path.join(bldroot,"FMS") )
 
         gmake_opts += " COMPLIB=libfms.a "
         gmake_opts += get_standard_makefile_args(case)
