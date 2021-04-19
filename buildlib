@@ -50,45 +50,46 @@ formatter_class=argparse.ArgumentDefaultsHelpFormatter
 
     return args.buildroot, args.installpath, args.caseroot
 
-def buildlib(bldroot, installpath, caseroot):
+def buildlib(bldroot, installpath, case):
 ###############################################################################
-    with Case(caseroot, read_only=False) as case:
-        srcroot = case.get_value("SRCROOT")
-        fms_dir = os.path.join(srcroot,"libraries","FMS")
-        if not os.path.isdir(os.path.join(bldroot,"FMS")):
-            os.makedirs(os.path.join(bldroot,"FMS"))
+    srcroot = case.get_value("SRCROOT")
+    caseroot = case.get_value("CASEROOT")
+    fms_dir = os.path.join(srcroot,"libraries","FMS")
+    if not os.path.isdir(os.path.join(bldroot,"FMS")):
+        os.makedirs(os.path.join(bldroot,"FMS"))
 
-        filepath = []
-        # put src_override directory at head of Filepath to use CESM interface versions of the FMS files.
-        filepath.append(os.path.join(fms_dir,"src_override"))
-        for _dir in glob.iglob(os.path.join(fms_dir,"src","*")):
-            if os.path.isdir(_dir) and not "cime_config" in _dir:
-                filepath.append(os.path.join(fms_dir, _dir))
-        with open(os.path.join(installpath,"Filepath"), "w") as fd:
-            for path in filepath:
-                fd.write(path+"\n")
-        # Tell mkSrcfiles to ignore files beginning in test_
-        os.environ["mkSrcfiles_skip_prefix"] = "test_"
-        gmake_opts = "-f {} ".format(os.path.join(fms_dir,"Makefile.cesm"))
-        gmake_opts += " -C {} ".format(installpath)
-        gmake_opts += "CASEROOT={} ".format(caseroot)
-        gmake_opts += "USER_INCLDIR=\"-I{} -I{} -I{}\"".format(os.path.join(fms_dir,"src","include"),
-                                                               os.path.join(fms_dir,"src","fms2_io","include"),
-                                                               os.path.join(fms_dir,"src","mpp","include"),
-                                                               os.path.join(bldroot,"FMS") )
+    filepath = []
+    # put src_override directory at head of Filepath to use CESM interface versions of the FMS files.
+    filepath.append(os.path.join(fms_dir,"src_override"))
+    for _dir in glob.iglob(os.path.join(fms_dir,"src","*")):
+        if os.path.isdir(_dir) and not "cime_config" in _dir:
+            filepath.append(os.path.join(fms_dir, _dir))
+    with open(os.path.join(installpath,"Filepath"), "w") as fd:
+        for path in filepath:
+            fd.write(path+"\n")
+    # Tell mkSrcfiles to ignore files beginning in test_
+    os.environ["mkSrcfiles_skip_prefix"] = "test_"
+    gmake_opts = "-f {} ".format(os.path.join(fms_dir,"Makefile.cesm"))
+    gmake_opts += " -C {} ".format(installpath)
+    gmake_opts += "CASEROOT={} ".format(caseroot)
+    gmake_opts += "USER_INCLDIR=\"-I{} -I{} -I{}\"".format(os.path.join(fms_dir,"src","include"),
+                                                           os.path.join(fms_dir,"src","fms2_io","include"),
+                                                           os.path.join(fms_dir,"src","mpp","include"),
+                                                           os.path.join(bldroot,"FMS") )
 
-        gmake_opts += " COMPLIB=libfms.a "
-        gmake_opts += get_standard_makefile_args(case)
-        gmake_cmd = case.get_value("GMAKE")
+    gmake_opts += " COMPLIB=libfms.a "
+    gmake_opts += get_standard_makefile_args(case)
+    gmake_cmd = case.get_value("GMAKE")
 
-        # This runs the FMS build
-        cmd = "{} {}".format(gmake_cmd, gmake_opts)
-        run_bld_cmd_ensure_logging(cmd, logger)
+    # This runs the FMS build
+    cmd = "{} {}".format(gmake_cmd, gmake_opts)
+    run_bld_cmd_ensure_logging(cmd, logger)
 
 
 def _main(argv, documentation):
     bldroot, installpath, caseroot = parse_command_line(argv, documentation)
-    buildlib(bldroot, installpath, caseroot)
+    with Case(caseroot) as case:
+        buildlib(bldroot, installpath, case)
 
 if (__name__ == "__main__"):
     _main(sys.argv, __doc__)
