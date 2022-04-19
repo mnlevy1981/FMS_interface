@@ -84,7 +84,7 @@ def buildlib(bldroot, installpath, case):
     # This runs the FMS build
     cmd = "{} {}".format(gmake_cmd, gmake_opts)
     run_bld_cmd_ensure_logging(cmd, logger)
-
+    del os.environ["mkSrcfiles_skip_prefix"]
 
 def _main(argv, documentation):
     bldroot, installpath, caseroot = parse_command_line(argv, documentation)
