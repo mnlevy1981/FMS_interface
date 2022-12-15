@@ -72,7 +72,8 @@ def buildlib(bldroot, installpath, case):
     gmake_opts = "-f {} ".format(os.path.join(fms_dir,"Makefile.cesm"))
     gmake_opts += " -C {} ".format(installpath)
     gmake_opts += "CASEROOT={} ".format(caseroot)
-    gmake_opts += "USER_INCLDIR=\"-I{} -I{} -I{}\"".format(os.path.join(fms_dir,"src","include"),
+    gmake_opts += "USER_INCLDIR=\"-I{} -I{} -I{} -I{}\"".format(os.path.join(fms_dir,"src_override"),
+                                                           os.path.join(fms_dir,"src","include"),
                                                            os.path.join(fms_dir,"src","fms2_io","include"),
                                                            os.path.join(fms_dir,"src","mpp","include"),
                                                            os.path.join(bldroot,"FMS") )
