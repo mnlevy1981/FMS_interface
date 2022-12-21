@@ -62,14 +62,17 @@
   ! </FUNCTION>
   !> @brief This function returns the current  standard fortran unit numbers for output.
   function stdout()
-    integer :: stdout
 #ifdef CESMCOUPLED
-    stdout = stdlog()
+    use shr_log_mod, only : shr_log_getLogUnit
+    integer :: stdout
+    call shr_log_getLogUnit(stdout)
     return
-#endif
+#else
+    integer :: stdout
     stdout = out_unit
     if( pe.NE.root_pe )stdout = stdlog()
     return
+#endif
   end function stdout
 
   !#####################################################################
