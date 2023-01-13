@@ -66,6 +66,7 @@
     use shr_log_mod, only : shr_log_getLogUnit
     integer :: stdout
     call shr_log_getLogUnit(stdout)
+    out_unit = stdout
     return
 #else
     integer :: stdout
