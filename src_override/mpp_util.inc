@@ -66,7 +66,7 @@
     use shr_log_mod, only : shr_log_getLogUnit
     integer :: stdout
     call shr_log_getLogUnit(stdout)
-    ! hardcoded 1024 should be same as _MAX_FILE_UNITS
+    ! hardcoded 1024 should be same as _MAX_FILE_UNITS 
     if(stdout < -1024 ) then
        call mpp_error(FATAL,'=>mpp_util.inc: ATTEMPT TO SET stdout to a unit outside of allowed range')
     endif
