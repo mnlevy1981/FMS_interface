@@ -137,7 +137,9 @@
 !up to MAXUNITS fortran units and MAXUNITS netCDF units are supported
 !file attributes (opened, format, access, threading, fileset) are saved against the unit number
 !external handles to netCDF units are saved from maxunits+1:2*maxunits
-      allocate( mpp_file(NULLUNIT:2*maxunits) ) !starts at NULLUNIT=-1, used by non-participant PEs in single-threaded I/O
+!starts at NULLUNIT=-1, used by non-participant PEs in single-threaded I/O
+! Mofified to allow negative unit numbers as returned from the newunit method.
+      allocate( mpp_file(-maxunits:2*maxunits) ) 
       mpp_file(:)%name   = ' '
       mpp_file(:)%action    = -1
       mpp_file(:)%format    = -1
@@ -161,10 +163,10 @@
       mpp_file(NULLUNIT)%valid  = .TRUE.
       mpp_file(NULLUNIT)%initialized = .TRUE.
 !declare the stdunits to be open
-      mpp_file(abs(outunit))%opened = .TRUE.
-      mpp_file(abs(logunit))%opened = .TRUE.
+      mpp_file(outunit)%opened = .TRUE.
+      mpp_file(logunit)%opened = .TRUE.
       inunit  = stdin()  ; mpp_file(inunit)%opened  = .TRUE.
-      errunit = stderr() ; mpp_file(abs(errunit))%opened = .TRUE.
+      errunit = stderr() ; mpp_file(errunit)%opened = .TRUE.
 
       if( pe.EQ.mpp_root_pe() )then
           iunit = stdlog()  ! PGI compiler does not like stdlog() doing I/O within write call
