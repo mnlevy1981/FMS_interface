@@ -82,7 +82,7 @@
 
 
       outunit = stdout(); logunit=stdlog()
-      write(outunit, mpp_io_nml)
+      !write(outunit, mpp_io_nml)
       write(logunit, mpp_io_nml)
 
 !--- check the deflate level, set deflate = 1 if deflate_level is greater than equal to 0
