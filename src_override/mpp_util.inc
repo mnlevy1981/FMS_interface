@@ -145,6 +145,7 @@
 !$  endif
 #ifdef CESMCOUPLED
     stdlog = stdout()
+    if (pe/=root_pe) stdlog = etc_unit
     return
 #endif
     if( pe.EQ.root_pe )then
