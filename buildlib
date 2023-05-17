@@ -57,16 +57,17 @@ def buildlib(bldroot, installpath, case):
     srcroot = case.get_value("SRCROOT")
     caseroot = case.get_value("CASEROOT")
     fms_dir = os.path.join(srcroot, "libraries", "FMS")
-
-    filepath = []
-    # put src_override directory at head of Filepath to use CESM interface versions of the FMS files.
-    filepath.append(os.path.join(fms_dir, "src_override"))
-    for _dir in glob.iglob(os.path.join(fms_dir, "src", "*")):
-        if os.path.isdir(_dir) and not "cime_config" in _dir:
-            filepath.append(os.path.join(fms_dir, _dir))
-    with open(os.path.join(bldroot, "Filepath"), "w") as fd:
-        for path in filepath:
-            fd.write(path + "\n")
+    fpfile = os.path.join(bldroot, "Filepath")
+    if not os.path.isfile(fpfile):
+        filepath = []
+        # put src_override directory at head of Filepath to use CESM interface versions of the FMS files.
+        filepath.append(os.path.join(fms_dir, "src_override"))
+        for _dir in glob.iglob(os.path.join(fms_dir, "src", "*")):
+            if os.path.isdir(_dir) and not "cime_config" in _dir:
+                filepath.append(os.path.join(fms_dir, _dir))
+        with open(os.path.join(bldroot, "Filepath"), "w") as fd:
+            for path in filepath:
+                fd.write(path + "\n")
     # Tell mkSrcfiles to ignore files beginning in test_
     os.environ["mkSrcfiles_skip_prefix"] = "test_"
     gmake_opts = "-f {} ".format(os.path.join(fms_dir, "Makefile.cesm"))
