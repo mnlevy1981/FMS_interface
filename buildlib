@@ -60,8 +60,6 @@ def buildlib(bldroot, installpath, case):
     fpfile = os.path.join(bldroot, "Filepath")
     if not os.path.isfile(fpfile):
         filepath = []
-        # put src_override directory at head of Filepath to use CESM interface versions of the FMS files.
-        filepath.append(os.path.join(fms_dir, "src_override"))
         for _dir in glob.iglob(os.path.join(fms_dir, "src", "*")):
             if os.path.isdir(_dir) and not "cime_config" in _dir:
                 filepath.append(os.path.join(fms_dir, _dir))
@@ -74,7 +72,6 @@ def buildlib(bldroot, installpath, case):
     gmake_opts += " -C {} ".format(bldroot)
     gmake_opts += "CASEROOT={} ".format(caseroot)
     gmake_opts += 'USER_INCLDIR="'\
-        f'-I{os.path.join(fms_dir, "src_override")} '\
         f'-I{os.path.join(fms_dir, "src", "include")} '\
         f'-I{os.path.join(fms_dir, "src", "fms2_io", "include")} '\
         f'-I{os.path.join(fms_dir, "src", "mpp", "include")} '\
