@@ -172,8 +172,13 @@ else
   endif
   endif
 endif
-FFLAGS += -I$(INC_NETCDF)
-CFLAGS += -I$(INC_NETCDF)
+ifeq ($(NETCDF_SEPARATE), false)
+  FFLAGS += -I$(INC_NETCDF)
+  CFLAGS += -I$(INC_NETCDF)
+else
+  FFLAGS += -I$(INC_NETCDF_FORTRAN)
+  CFLAGS += -I$(INC_NETCDF_C)
+endif
 
 # Set HAVE_SLASHPROC on LINUX systems which are not bluegene or Darwin (OSx)
 
